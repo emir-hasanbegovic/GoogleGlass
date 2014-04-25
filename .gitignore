@@ -1,0 +1,25 @@
+# Platform files
+.DS_Store
+
+# IDE directories
+bin/
+out/
+gen/
+gen-external-apklibs/
+target/
+build/
+classes/
+libs/
+.idea/
+.settings/
+
+# IDE files
+*.iml
+.gradle/
+local.properties
+.classpath
+.project
+lint.xml
+project.properties
+.orig
+proguard-project.txt
