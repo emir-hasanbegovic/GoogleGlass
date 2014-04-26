@@ -9,7 +9,6 @@ gen-external-apklibs/
 target/
 build/
 classes/
-libs/
 .idea/
 .settings/
 
