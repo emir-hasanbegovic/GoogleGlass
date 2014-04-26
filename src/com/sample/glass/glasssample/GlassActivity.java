@@ -11,10 +11,12 @@ import model.CarParks;
 import model.GreenParking;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +35,9 @@ public class GlassActivity extends Activity implements LocationListener {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		//Intent intent = new Intent(Intent.ACTION_VIEW);
+		//intent.setData(Uri.parse("google.navigation:q=48.649469,-2.02579&mode=d"));
+		//startActivity(intent);
 		super.onCreate(savedInstanceState);
 		mCardScrollView = new CardScrollView(this);
 		mCardScrollView.setAdapter(new ProductsAdapter(getApplicationContext(), R.layout.list_item_picture));
