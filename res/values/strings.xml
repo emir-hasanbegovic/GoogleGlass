@@ -6,5 +6,6 @@
     <string name="activity_glass_progress_getting_parking">Getting Parking Locations</string>
     <string name="activity_glass_progress_finding_location">Getting Location</string>
     <string name="activity_glass_progress_finding_parking">Finding Parking</string>
+    <string name="list_item_lawn_free">Free</string>
 
 </resources>

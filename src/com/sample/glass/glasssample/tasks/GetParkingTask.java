@@ -57,7 +57,7 @@ public class GetParkingTask extends AsyncTask<Void, Void, Void> {
 		inputStream = null;
 		inputStreamReader = null;
 		try {
-			inputStream = mActivity.getResources().openRawResource(R.raw.residential_addresses_3_2501);
+			inputStream = mActivity.getResources().openRawResource(R.raw.lawn_parking);
 			inputStreamReader = new InputStreamReader(inputStream, UTF8);
 			ParkingApplication.LAWN_PARKING_LIST = ParkingApplication.GSON.fromJson(inputStreamReader, LawnParkingResults.class);
 		} catch (final UnsupportedEncodingException unsupportedEncodingException) {

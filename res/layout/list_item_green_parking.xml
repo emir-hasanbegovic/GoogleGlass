@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center" >
+
+    <ImageView
+        android:id="@+id/list_item_green_parking_icon"
+        android:src="@drawable/ic_green_parking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/list_item_green_parking_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/list_item_green_parking_icon" />
+
+    <TextView
+        android:id="@+id/list_item_green_parking_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/list_item_green_parking_address"
+        android:layout_below="@id/list_item_green_parking_address" />
+
+    <TextView
+        android:id="@+id/list_item_green_parking_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/list_item_green_parking_address"
+        android:layout_below="@id/list_item_green_parking_price" />
+
+</RelativeLayout>

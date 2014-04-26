@@ -25,5 +25,11 @@
             android:layout_gravity="bottom"
             android:indeterminate="true" />
     </FrameLayout>
-	
+
+    <com.google.android.glass.widget.CardScrollView
+        android:id="@+id/activity_glass_results"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
 </FrameLayout>

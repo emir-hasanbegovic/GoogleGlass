@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center" >
+
+    <ImageView
+        android:id="@+id/list_item_lawn_parking_icon"
+        android:src="@drawable/ic_lawn_parking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/list_item_lawn_parking_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/list_item_lawn_parking_icon" />
+
+    <TextView
+        android:text="@string/list_item_lawn_free"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/list_item_lawn_parking_address"
+        android:layout_below="@id/list_item_lawn_parking_address" />
+
+  
+</RelativeLayout>

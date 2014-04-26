@@ -9,15 +9,16 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
-import com.sample.glass.glasssample.model.GreenParking;
-import com.sample.glass.glasssample.model.LawnParking;
+import com.google.android.glass.widget.CardScrollView;
+import com.sample.glass.glasssample.adapters.ParkingAdapter;
+import com.sample.glass.glasssample.model.Parking;
 import com.sample.glass.glasssample.tasks.FindParkingTask;
 import com.sample.glass.glasssample.tasks.GetParkingTask;
 import com.sample.glass.glasssample.utilities.Debug;
 import com.sample.glass.glasssample.utilities.LocationHelper;
 
 public class GlassActivity extends Activity {
-	private static final int RADIUS = 500;
+	private static final int RADIUS = 1000;
 	private static final String MARS_LOCATION = "Mars Location";
 	private static final float MARS_LATITUDE = 43.659968f;
 	private static final float MARS_LONGITUDE = -79.388934f;
@@ -25,12 +26,13 @@ public class GlassActivity extends Activity {
 
 	public boolean mIsDestroyed;
 	public boolean mFindingParking;
-	private ArrayList<GreenParking> mGreenParkings;
-	private ArrayList<LawnParking> mLawnParkings;
+	private ArrayList<Parking> mParkingList;
 
 	private Location mLocation;
 	private Handler mHandler;
 	private TextView mProgressTextView;
+	private View mProgressContainer;
+	private CardScrollView mCardScrollView;
 	private LocationHelper mLocationHelper;
 	private final Runnable mTimeout = new Runnable() {
 
@@ -48,7 +50,6 @@ public class GlassActivity extends Activity {
 			}
 		}
 	};
-	private View mProgressContainer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,7 @@ public class GlassActivity extends Activity {
 		setContentView(R.layout.activity_glass);
 		mProgressTextView = (TextView) findViewById(R.id.activity_glass_progress_text);
 		mProgressContainer = findViewById(R.id.activity_glass_progress_container);
+		mCardScrollView = (CardScrollView) findViewById(R.id.activity_glass_results);
 
 		mLocationHelper = new LocationHelper(this);
 		// Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -71,7 +73,7 @@ public class GlassActivity extends Activity {
 		super.onStart();
 		getParking();
 		mLocationHelper.startLocationSearch();
-		updateProgress(null, null);
+		updateUI(null);
 		mHandler.postDelayed(mTimeout, GPS_TIMEOUT);
 	}
 
@@ -98,21 +100,24 @@ public class GlassActivity extends Activity {
 		}
 	}
 
-	public void updateProgress(final ArrayList<GreenParking> greenParkings, final ArrayList<LawnParking> lawnParkings) {
-		if (mLawnParkings == null) {
-			mLawnParkings = lawnParkings;
+	public void updateUI(final ArrayList<Parking> parkingList) {
+		if (mParkingList == null) {
+			mParkingList = parkingList;
 		}
-		if (mGreenParkings == null) {
-			mGreenParkings = greenParkings;
-		}
-		final boolean foundParking = mLawnParkings != null && mGreenParkings != null;
+		final boolean foundParking = mParkingList != null;
 		if (foundParking) {
 			mFindingParking = false;
 			mProgressContainer.setVisibility(View.GONE);
+			mCardScrollView.setVisibility(View.VISIBLE);
+			final ParkingAdapter parkingAdapter = new ParkingAdapter(getApplicationContext());
+			parkingAdapter.setParkingList(parkingList);
+			mCardScrollView.setAdapter(parkingAdapter);
+			mCardScrollView.activate();
 			return;
 		}
 
 		mProgressContainer.setVisibility(View.VISIBLE);
+		mCardScrollView.setVisibility(View.GONE);
 		final boolean hasLocation = mLocation != null;
 		final boolean hasParkingLists = ParkingApplication.LAWN_PARKING_LIST != null && ParkingApplication.GREEN_PARKING_LIST != null;
 		if (!hasParkingLists) {
@@ -130,8 +135,8 @@ public class GlassActivity extends Activity {
 	}
 
 	public void findParking() {
-		updateProgress(null, null);
-		final boolean foundParking = mLawnParkings != null && mGreenParkings != null;
+		updateUI(null);
+		final boolean foundParking = mParkingList != null;
 		if (foundParking || mFindingParking || mLocation == null || ParkingApplication.GREEN_PARKING_LIST == null || ParkingApplication.LAWN_PARKING_LIST == null) {
 			return;
 		}
