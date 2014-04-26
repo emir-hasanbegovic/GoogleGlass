@@ -15,13 +15,10 @@ public class Debug {
     private static boolean sIsDebug;
 
     public static void setIsDebug(final boolean isDebug) {
-    	log("isDebug: " + isDebug);
+    	Log.d(TAG, "isDebug: " + isDebug);
         sIsDebug = isDebug;
     }
 
-    public static void log() {
-    	log("");
-    }
     public static void log(final String string) {
         if (!sIsDebug) {
             return;
