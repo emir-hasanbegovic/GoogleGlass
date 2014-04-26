@@ -1,4 +1,4 @@
-package model;
+package com.sample.glass.glasssample.model;
 
 import com.google.gson.annotations.SerializedName;
 

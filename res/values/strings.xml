@@ -3,5 +3,8 @@
 
     <string name="app_name">Glass R&amp;D</string>
     <string name="title_activity_glass">Glass Activity</string>
+    <string name="activity_glass_progress_getting_parking">Getting Parking Locations</string>
+    <string name="activity_glass_progress_finding_location">Getting Location</string>
+    <string name="activity_glass_progress_finding_parking">Finding Parking</string>
 
 </resources>
