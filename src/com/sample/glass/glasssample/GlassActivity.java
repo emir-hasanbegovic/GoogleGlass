@@ -5,32 +5,51 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.List;
 
 import model.CarParks;
 import model.GreenParking;
 import android.app.Activity;
+import android.content.Context;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.glass.widget.CardScrollView;
 import com.google.gson.Gson;
 import com.sample.glass.glasssample.utilities.Debug;
 
-public class GlassActivity extends Activity {
+public class GlassActivity extends Activity implements LocationListener {
 
 	private static final Gson GSON = new Gson();
 	public static ArrayList<GreenParking> GREEN_PARKING_LIST;
 	private CardScrollView mCardScrollView;
 	private boolean mIsDestroyed;
-
+	LocationManager locationManager;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Debug.setIsDebug(true);
 		mCardScrollView = new CardScrollView(this);
 		mCardScrollView.setAdapter(new ProductsAdapter(getApplicationContext(), R.layout.list_item_picture));
 		mCardScrollView.activate();
 		setContentView(mCardScrollView);
+		
+		Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setAltitudeRequired(true);
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        List<String> providers = locationManager.getProviders(
+                criteria, true /* enabledOnly */);
+
+        for (String provider : providers) {
+            locationManager.requestLocationUpdates(provider, 0,
+                    0, this);
+        }
 	}
 
 	@Override
@@ -94,5 +113,28 @@ public class GlassActivity extends Activity {
 			}
 		}
 
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		Log.d("location provider: ", location.toString());
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+		
 	}
 }
