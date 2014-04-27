@@ -106,10 +106,6 @@ public class GlassService extends Service {
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			mLiveCard.setAction(PendingIntent.getActivity(context, 0, intent, 0));
 			mLiveCard.publish(LiveCard.PublishMode.SILENT);
-		} else {
-			// Card is already published.
-			mLiveCard.unpublish();
-			return;
 		}
 	}
 
