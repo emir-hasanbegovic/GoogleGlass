@@ -8,6 +8,7 @@
     <string name="activity_glass_progress_finding_parking">Finding parking &#8230;</string>
     <string name="list_item_lawn_free">Free</string>
     <string name="stop">Stop</string>
+    <string name="go">Go</string>
     <string name="activity_glass_results_action_label">Tap for directions</string>
 
 </resources>

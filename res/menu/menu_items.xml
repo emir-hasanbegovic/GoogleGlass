@@ -3,4 +3,7 @@
     <item
         android:id="@+id/stop"
         android:title="@string/stop" />
+    <item
+        android:id="@+id/go"
+        android:title="@string/go" />
 </menu>
