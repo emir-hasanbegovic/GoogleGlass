@@ -15,7 +15,6 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/glass_card_two_column_margin"
         android:layout_toRightOf="@id/list_item_green_parking_icon"
         android:gravity="left|center_vertical"
         android:orientation="vertical" >

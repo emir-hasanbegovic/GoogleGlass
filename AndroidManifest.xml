@@ -18,7 +18,7 @@
         android:theme="@style/MenuTheme" >
         <activity
             android:name="GlassActivity"
-            android:icon="@drawable/glass_icon"
+            android:icon="@drawable/ic_launcher"
             android:label="@string/title_activity_glass" >
             <intent-filter>
                 <action android:name="com.google.android.glass.action.VOICE_TRIGGER" />
