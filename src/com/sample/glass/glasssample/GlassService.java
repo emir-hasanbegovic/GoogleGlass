@@ -57,11 +57,13 @@ public class GlassService extends Service {
 		} else if (GREEN_PARKING.equals(type)) {
 			final float distance = intent.getFloatExtra(GreenParking.Keys.DISTANCE, 0);
 			final String address = intent.getStringExtra(GreenParking.Keys.ADDRESS);
+			final String rateHalfHour = intent.getStringExtra(GreenParking.Keys.RATE_HALF_HOUR);
 			final String latitude = intent.getStringExtra(GreenParking.Keys.LAT);
 			final String longitude = intent.getStringExtra(GreenParking.Keys.LNG);
 			final GreenParking greenParking = new GreenParking();
 			greenParking.mDistance = distance;
 			greenParking.mAddress = address;
+			greenParking.mRateHalfHour = rateHalfHour;
 			greenParking.mLat = latitude;
 			greenParking.mLong = longitude;
 			publishCard(getApplicationContext(), greenParking);
