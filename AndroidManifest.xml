@@ -29,6 +29,9 @@
                 android:resource="@xml/glass_trigger" >
             </meta-data>
         </activity>
+        <service android:name=".GlassService"/>
+        <activity
+            android:name="GlassMenuActivity"/>
     </application>
 
 </manifest>
