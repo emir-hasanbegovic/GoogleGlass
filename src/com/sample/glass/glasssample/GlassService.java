@@ -94,14 +94,15 @@ public class GlassService extends Service {
 	}
 
 	private void publishCard(final Context context, final RemoteViews remoteViews, float latitude, float longitude, String address) {
-		if (mLiveCard == null) {
-			mLiveCard = new LiveCard(this, LIVE_CARD_ID);
-			mLiveCard.setViews(remoteViews);
-			Intent intent = GlassMenuActivity.SetUpMenu(this, latitude, longitude, address);
-			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-			mLiveCard.setAction(PendingIntent.getActivity(context, 0, intent, 0));
-			mLiveCard.publish(LiveCard.PublishMode.SILENT);
+		if (mLiveCard != null) {
+			mLiveCard.unpublish();
 		}
+		mLiveCard = new LiveCard(this, LIVE_CARD_ID);
+		mLiveCard.setViews(remoteViews);
+		Intent intent = GlassMenuActivity.SetUpMenu(this, latitude, longitude, address);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		mLiveCard.setAction(PendingIntent.getActivity(context, 0, intent, 0));
+		mLiveCard.publish(LiveCard.PublishMode.SILENT);
 	}
 
 	public static void launchCard(final Activity activity, final GreenParking greenParking) {

@@ -38,9 +38,9 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 	public boolean mIsDestroyed;
 	public boolean mFindingParking;
 
-	private ArrayList<Parking> mParkingList;
 	private boolean mHaveWakeLock;
 	private boolean mIsError;
+	private ArrayList<Parking> mParkingList;
 	private Location mLocation;
 	private Handler mHandler;
 	private TextView mProgressTextView;
@@ -61,11 +61,11 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 			releaseLock();
 			mLocationHelper.stopLocationSearch();
 			if (mLocation == null) {
-				// final Location location = new Location(MARS_LOCATION);
-				// location.setLatitude(MARS_LATITUDE);
-				// location.setLongitude(MARS_LONGITUDE);
-				// setLocation(location);
-				setErrorUI("Unable to get location");
+				final Location location = new Location(MARS_LOCATION);
+				location.setLatitude(MARS_LATITUDE);
+				location.setLongitude(MARS_LONGITUDE);
+				setLocation(location);
+				// setErrorUI("Unable to get location");
 			}
 		}
 	};
@@ -105,7 +105,6 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 
 		final PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "GoogleGlassParking");
-
 	}
 
 	@Override
@@ -115,6 +114,7 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 	}
 
 	private void start() {
+		Debug.log("mHaveWakeLock: " + mHaveWakeLock);
 		mIsError = false;
 		acquireLock();
 		mLocationHelper.startLocationSearch();
@@ -123,10 +123,14 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 	}
 
 	private void stop() {
+		Debug.log("mHaveWakeLock: " + mHaveWakeLock);
 		releaseLock();
 		mLocationHelper.stopLocationSearch();
 		updateUI(null);
 		mHandler.removeCallbacks(mTimeout);
+		mFindingParking = false;
+		mParkingList = null;
+		mLocation = null;
 	}
 
 	@Override
@@ -233,11 +237,7 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 
 	private synchronized void retry() {
 		mIsError = false;
-		mParkingList = null;
-		mLocation = null;
-		mLocationHelper.startLocationSearch();
 		start();
-
 	}
 
 	public void navigateTo(final Location location, final String address) {
@@ -247,7 +247,7 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 		final Intent intent = new Intent(Intent.ACTION_VIEW);
 		final double latitude = location.getLatitude();
 		final double longitude = location.getLongitude();
-		final String uri = "google.navigation:q=" + latitude + "," + longitude + "&mode=d&title=" + address.replaceAll("\\s", "+");
+		final String uri = "google.navigation:q=" + latitude + "," + longitude + "(" + address.replaceAll("\\s", "+") + ")" + "&mode=d&title=" + address.replaceAll("\\s", "+");
 		Debug.log("uri: " + uri);
 		intent.setData(Uri.parse(uri));
 		startActivity(intent);

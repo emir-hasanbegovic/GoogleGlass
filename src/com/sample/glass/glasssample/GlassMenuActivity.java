@@ -1,5 +1,7 @@
 package com.sample.glass.glasssample;
 
+import java.net.URLEncoder;
+
 import com.sample.glass.glasssample.utilities.Debug;
 
 import android.app.Activity;
@@ -58,7 +60,8 @@ public class GlassMenuActivity extends Activity {
 		case R.id.go:
 			Intent intent = new Intent(Intent.ACTION_VIEW);
 			
-			final String uri = "google.navigation:q=" + lat + "," + lon + "&mode=w&title=" + address.replaceAll("\\s","+");
+			final String uri = "google.navigation:q=" + lat + "," + lon +"(" + address.replaceAll("\\s", "+") + ")" + "&mode=w&title=" + address.replaceAll("\\s", "+");
+			
 			Debug.log("uri: " + uri);
 			intent.setData(Uri.parse(uri));
 			startActivity(intent);
