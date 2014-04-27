@@ -88,7 +88,7 @@ public class GlassService extends Service {
 		if (mLiveCard == null) {
 			mLiveCard = new LiveCard(this, LIVE_CARD_ID);
 			mLiveCard.setViews(remoteViews);
-			final Intent intent = new Intent(context, GlassActivity.class);
+			final Intent intent = new Intent(context, GlassMenuActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			mLiveCard.setAction(PendingIntent.getActivity(context, 0, intent, 0));
 			mLiveCard.publish(LiveCard.PublishMode.SILENT);

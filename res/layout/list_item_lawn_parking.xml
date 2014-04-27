@@ -6,11 +6,14 @@
 
     <ImageView
         android:id="@+id/list_item_lawn_parking_icon"
-        android:layout_width="@dimen/glass_card_left_column_width"
-        android:layout_height="wrap_content"
+        android:layout_width="200px"
+        android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_lawn_parking" />
+        android:layout_marginBottom="@dimen/glass_card_margin"
+        android:layout_marginLeft="@dimen/glass_card_margin"
+        android:layout_marginTop="@dimen/glass_card_margin"
+        android:scaleType="centerCrop" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -27,12 +30,6 @@
             android:maxLines="2"
             android:textColor="@color/green"
             android:textSize="@dimen/font_34px" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/list_item_lawn_free"
-            android:textSize="@dimen/font_50px" />
 
         <TextView
             android:id="@+id/list_item_lawn_parking_distance"

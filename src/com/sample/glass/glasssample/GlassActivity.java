@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -76,9 +77,6 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 		mCardScrollView.setOnItemClickListener(this);
 
 		mLocationHelper = new LocationHelper(this);
-		// Intent intent = new Intent(Intent.ACTION_VIEW);
-		// intent.setData(Uri.parse("google.navigation:q=48.649469,-2.02579&mode=d"));
-		// startActivity(intent);
 	}
 
 	@Override
@@ -162,7 +160,10 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		final AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		audio.playSoundEffect(Sounds.TAP);
 		final Parking parking = (Parking) parent.getItemAtPosition(position);
+		navigateTo(parking.getLocation());
 		if (parking instanceof GreenParking) {
 			final GreenParking greenParking = (GreenParking) parking;
 			GlassService.launchCard(this, greenParking);
@@ -172,6 +173,16 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 			GlassService.launchCard(this, lawnParking);
 			finish();
 		}
-		
+	}
+
+	public void navigateTo(final Location location) {
+		if (location == null) {
+			return;
+		}
+		final Intent intent = new Intent(Intent.ACTION_VIEW);
+		final double latitude = location.getLatitude();
+		final double longitude = location.getLongitude();
+		intent.setData(Uri.parse("google.navigation:q=" + latitude + "," + longitude + "&mode=d"));
+		startActivity(intent);
 	}
 }

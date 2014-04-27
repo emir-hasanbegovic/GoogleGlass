@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.glass.widget.CardScrollAdapter;
@@ -14,6 +18,10 @@ import com.sample.glass.glasssample.R;
 import com.sample.glass.glasssample.model.GreenParking;
 import com.sample.glass.glasssample.model.LawnParking;
 import com.sample.glass.glasssample.model.Parking;
+import com.sample.glass.glasssample.utilities.Debug;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+import com.squareup.picasso.Picasso.LoadedFrom;
 
 /**
  * Created by Emir Hasanbegovic on 2014-03-21.
@@ -24,6 +32,7 @@ public class ParkingAdapter extends CardScrollAdapter {
 		greenParking, lawnParking
 	}
 
+	private static final String URL = "http://maps.googleapis.com/maps/api/streetview?size=240x360&location=%s&sensor=false";
 	private Context mContext;
 
 	public ParkingAdapter(final Context context) {
@@ -121,6 +130,14 @@ public class ParkingAdapter extends CardScrollAdapter {
 			final TextView priceTextView = (TextView) view.findViewById(R.id.list_item_green_parking_price);
 			final String price = String.format(Parking.PRICE, greenParking.mRateHalfHour);
 			priceTextView.setText(price);
+			
+			final ImageView imageView = (ImageView) view.findViewById(R.id.list_item_green_parking_background);
+			final String address = greenParking.mAddress.replaceAll("\\s", "+") + ",Toronto,ON";
+			final String url = String.format(URL, address);
+			Debug.log("url: "+ url);
+			imageView.setImageBitmap(null);
+			Picasso.with(mContext).load(url).into(imageView);
+			
 			break;
 		}
 		case lawnParking:
@@ -133,6 +150,14 @@ public class ParkingAdapter extends CardScrollAdapter {
 			final float distanceInKm = getDistanceInKm(lawnParking.mDistance);
 			final String distance = String.format(Parking.DISTANCE, distanceInKm);
 			distanceTextView.setText(distance);
+			
+			final ImageView imageView = (ImageView) view.findViewById(R.id.list_item_lawn_parking_icon);
+			final String address = lawnParking.mAddress.replaceAll("\\s", "+") + ",Toronto,ON";
+			final String url = String.format(URL, address);
+			Debug.log("url: "+ url);
+			imageView.setImageBitmap(null);
+			Picasso.with(mContext).load(url).into(imageView);
+			
 		}
 		return view;
 
