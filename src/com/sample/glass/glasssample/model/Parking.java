@@ -3,7 +3,13 @@ package com.sample.glass.glasssample.model;
 import android.location.Location;
 
 public abstract class Parking implements Comparable<Parking>{
-
+	
+	public static final String PRICE = "$ %s / 30 mins";
+	public static final String DISTANCE = "%.1f km";
+	
+	public static class Keys {
+		public static final String DISTANCE = "distance";
+	}
 	public final float mDistance;
 	
 	public Parking(final float distance) {

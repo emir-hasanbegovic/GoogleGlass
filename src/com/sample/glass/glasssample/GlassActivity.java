@@ -4,24 +4,29 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 
 import com.google.android.glass.media.Sounds;
 import com.google.android.glass.widget.CardScrollView;
 import com.sample.glass.glasssample.adapters.ParkingAdapter;
+import com.sample.glass.glasssample.model.GreenParking;
+import com.sample.glass.glasssample.model.LawnParking;
 import com.sample.glass.glasssample.model.Parking;
 import com.sample.glass.glasssample.tasks.FindParkingTask;
 import com.sample.glass.glasssample.tasks.GetParkingTask;
 import com.sample.glass.glasssample.utilities.Debug;
 import com.sample.glass.glasssample.utilities.LocationHelper;
 
-public class GlassActivity extends Activity {
+public class GlassActivity extends Activity implements OnItemClickListener {
 	private static final int RADIUS = 1000;
 	private static final String MARS_LOCATION = "Mars Location";
 	private static final float MARS_LATITUDE = 43.659968f;
@@ -66,8 +71,9 @@ public class GlassActivity extends Activity {
 		mProgressTextView = (TextView) findViewById(R.id.activity_glass_progress_text);
 		mProgressContainer = findViewById(R.id.activity_glass_progress_container);
 		mResultsContainer = findViewById(R.id.activity_glass_results_container);
-		
+
 		mCardScrollView = (CardScrollView) findViewById(R.id.activity_glass_results);
+		mCardScrollView.setOnItemClickListener(this);
 
 		mLocationHelper = new LocationHelper(this);
 		// Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -124,7 +130,6 @@ public class GlassActivity extends Activity {
 			audio.playSoundEffect(Sounds.SUCCESS);
 			return;
 		}
-		
 
 		mProgressContainer.setVisibility(View.VISIBLE);
 		mResultsContainer.setVisibility(View.GONE);
@@ -153,5 +158,20 @@ public class GlassActivity extends Activity {
 		mFindingParking = true;
 		final FindParkingTask findParkingTask = new FindParkingTask(this, RADIUS, mLocation);
 		findParkingTask.execute((Void) null);
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		final Parking parking = (Parking) parent.getItemAtPosition(position);
+		if (parking instanceof GreenParking) {
+			final GreenParking greenParking = (GreenParking) parking;
+			GlassService.launchCard(this, greenParking);
+			finish();
+		} else {
+			final LawnParking lawnParking = (LawnParking) parking;
+			GlassService.launchCard(this, lawnParking);
+			finish();
+		}
+		
 	}
 }

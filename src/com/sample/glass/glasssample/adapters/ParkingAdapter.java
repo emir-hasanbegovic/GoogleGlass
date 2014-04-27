@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.graphics.Picture;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +19,6 @@ import com.sample.glass.glasssample.model.Parking;
  * Created by Emir Hasanbegovic on 2014-03-21.
  */
 public class ParkingAdapter extends CardScrollAdapter {
-	private static final String PRICE = "$ %s / 30 mins";
-	private static final String DISTANCE = "%.1f km";
 
 	private enum Types {
 		greenParking, lawnParking
@@ -56,6 +53,9 @@ public class ParkingAdapter extends CardScrollAdapter {
 
 	@Override
 	public int getCount() {
+		if (mParkingList == null) {
+			return 0;
+		}
 		return mParkingList.size();
 	}
 
@@ -115,11 +115,11 @@ public class ParkingAdapter extends CardScrollAdapter {
 
 			final TextView distanceTextView = (TextView) view.findViewById(R.id.list_item_green_parking_distance);
 			final float distanceInKm = getDistanceInKm(greenParking.mDistance);
-			final String distance = String.format(DISTANCE, distanceInKm);
+			final String distance = String.format(Parking.DISTANCE, distanceInKm);
 			distanceTextView.setText(distance);
 
 			final TextView priceTextView = (TextView) view.findViewById(R.id.list_item_green_parking_price);
-			final String price = String.format(PRICE, greenParking.mRateHalfHour);
+			final String price = String.format(Parking.PRICE, greenParking.mRateHalfHour);
 			priceTextView.setText(price);
 			break;
 		}
@@ -131,14 +131,14 @@ public class ParkingAdapter extends CardScrollAdapter {
 
 			final TextView distanceTextView = (TextView) view.findViewById(R.id.list_item_lawn_parking_distance);
 			final float distanceInKm = getDistanceInKm(lawnParking.mDistance);
-			final String distance = String.format(DISTANCE, distanceInKm);
+			final String distance = String.format(Parking.DISTANCE, distanceInKm);
 			distanceTextView.setText(distance);
 		}
 		return view;
 
 	}
-	
-	private float getDistanceInKm(final float distanceInM){
+
+	private float getDistanceInKm(final float distanceInM) {
 		return distanceInM / 1000f;
 	}
 

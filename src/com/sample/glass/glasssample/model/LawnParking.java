@@ -4,7 +4,11 @@ import android.location.Location;
 
 import com.google.gson.annotations.SerializedName;
 
-public class LawnParking extends Parking  {
+public class LawnParking extends Parking {
+
+	public LawnParking(final float distance) {
+		super(distance);
+	}
 	
 	public LawnParking(final LawnParking lawnParking, final float distance) {
 		super(distance);
@@ -13,7 +17,7 @@ public class LawnParking extends Parking  {
 		mLongitude = lawnParking.mLongitude;
 	}
 
-	public static class Keys {
+	public static class Keys extends Parking.Keys {
 		public static final String ADDRESS = "address";
 		public static final String LATITUDE = "latitude";
 		public static final String LONGITUDE = "longitude";
