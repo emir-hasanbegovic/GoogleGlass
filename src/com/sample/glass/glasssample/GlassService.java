@@ -22,8 +22,6 @@ public class GlassService extends Service {
 	private static final String MENU_LONG = "menuLong";
 	private static final String MENU_LAT = "menuLat";
 	private LiveCard mLiveCard;
-	private float	mLongitude;
-	private float	mLatitude;
 	
 	@Override
 	public void onCreate() {
@@ -82,10 +80,8 @@ public class GlassService extends Service {
 		remoteViews.setTextViewText(R.id.list_item_green_parking_distance, distanceString);
 		remoteViews.setTextViewText(R.id.list_item_green_parking_price, priceString);
 		
-		mLongitude = Float.parseFloat(greenParking.mLong);
-		mLatitude = Float.parseFloat(greenParking.mLat);
 		
-		publishCard(context, remoteViews);
+		publishCard(context, remoteViews, Float.parseFloat(greenParking.mLat), Float.parseFloat(greenParking.mLong), greenParking.mAddress);
 	}
 
 	private void publishCard(final Context context, final LawnParking lawnParking) {
@@ -94,17 +90,14 @@ public class GlassService extends Service {
 		final String distanceString = String.format(Parking.DISTANCE, lawnParking.mDistance);
 		remoteViews.setTextViewText(R.id.list_item_green_parking_distance, distanceString);
 		
-		mLongitude = lawnParking.mLongitude;
-		mLatitude = lawnParking.mLatitude;
-		
-		publishCard(context, remoteViews);
+		publishCard(context, remoteViews, lawnParking.mLatitude, lawnParking.mLongitude, lawnParking.mAddress);
 	}
 
-	private void publishCard(final Context context, final RemoteViews remoteViews) {
+	private void publishCard(final Context context, final RemoteViews remoteViews, float latitude, float longitude, String address) {
 		if (mLiveCard == null) {
 			mLiveCard = new LiveCard(this, LIVE_CARD_ID);
 			mLiveCard.setViews(remoteViews);
-			Intent intent = GlassMenuActivity.SetUpMenu(this, mLongitude, mLatitude);
+			Intent intent = GlassMenuActivity.SetUpMenu(this, latitude, longitude, address);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			mLiveCard.setAction(PendingIntent.getActivity(context, 0, intent, 0));
 			mLiveCard.publish(LiveCard.PublishMode.SILENT);

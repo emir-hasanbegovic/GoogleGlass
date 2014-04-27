@@ -24,6 +24,7 @@ import com.sample.glass.glasssample.model.GreenParking;
 import com.sample.glass.glasssample.model.LawnParking;
 import com.sample.glass.glasssample.model.Parking;
 import com.sample.glass.glasssample.tasks.FindParkingTask;
+import com.sample.glass.glasssample.utilities.Debug;
 import com.sample.glass.glasssample.utilities.LocationHelper;
 
 public class GlassActivity extends Activity implements OnItemClickListener {
@@ -171,26 +172,29 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 		final AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		audio.playSoundEffect(Sounds.TAP);
 		final Parking parking = (Parking) parent.getItemAtPosition(position);
-		navigateTo(parking.getLocation());
 		if (parking instanceof GreenParking) {
 			final GreenParking greenParking = (GreenParking) parking;
 			GlassService.launchCard(this, greenParking);
+			navigateTo(greenParking.getLocation(), greenParking.mAddress);
 			finish();
 		} else {
 			final LawnParking lawnParking = (LawnParking) parking;
 			GlassService.launchCard(this, lawnParking);
+			navigateTo(lawnParking.getLocation(), lawnParking.mAddress);
 			finish();
 		}
 	}
 
-	public void navigateTo(final Location location) {
+	public void navigateTo(final Location location, final String address) {
 		if (location == null) {
 			return;
 		}
 		final Intent intent = new Intent(Intent.ACTION_VIEW);
 		final double latitude = location.getLatitude();
 		final double longitude = location.getLongitude();
-		intent.setData(Uri.parse("google.navigation:q=" + latitude + "," + longitude + "&mode=d"));
+		final String uri = "google.navigation:q=" + latitude + "," + longitude + "&mode=d&title=" + address.replaceAll("\\s", "+");
+		Debug.log("uri: " + uri);
+		intent.setData(Uri.parse(uri));
 		startActivity(intent);
 	}
 }
