@@ -50,6 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="5px"
             android:text="@string/activity_glass_results_action_label"
             android:textSize="@dimen/font_20px" />
     </FrameLayout>
@@ -61,15 +62,18 @@
         android:visibility="gone" >
 
         <TextView
-            android:id="@+id/activity_glass_results"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/activity_glass_error_message" />
+            android:id="@+id/activity_glass_error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/activity_glass_error_message"
+            android:textSize="@dimen/font_40px" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="5px"
             android:text="@string/activity_glass_error_label"
             android:textSize="@dimen/font_20px" />
     </FrameLayout>

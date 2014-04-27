@@ -106,6 +106,10 @@ public class FindParkingTask extends AsyncTask<Void, Void, ArrayList<Parking>> {
 		if (mActivity.mIsDestroyed) {
 			return;
 		}
-		mActivity.updateUI(parkingList);
+		if (parkingList == null || parkingList.isEmpty()) {
+			mActivity.setErrorUI("Unable to retrieve Results");
+		} else {
+			mActivity.updateUI(parkingList);
+		}
 	}
 }

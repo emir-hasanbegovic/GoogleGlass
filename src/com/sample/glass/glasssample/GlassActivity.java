@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -32,7 +33,7 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 	private static final String MARS_LOCATION = "Mars Location";
 	private static final float MARS_LATITUDE = 43.659968f;
 	private static final float MARS_LONGITUDE = -79.388934f;
-	private static final long GPS_TIMEOUT = 1000 * 5; // 5 seconds
+	private static final long GPS_TIMEOUT = 1000 * 10; // 10 seconds
 
 	public boolean mIsDestroyed;
 	public boolean mFindingParking;
@@ -47,6 +48,9 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 	private View mResultsContainer;
 	private CardScrollView mCardScrollView;
 	private LocationHelper mLocationHelper;
+	private WakeLock mWakeLock;
+	private View mErrorContainer;
+	private TextView mErrorMessage;
 	private final Runnable mTimeout = new Runnable() {
 
 		@Override
@@ -57,10 +61,11 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 			releaseLock();
 			mLocationHelper.stopLocationSearch();
 			if (mLocation == null) {
-				final Location location = new Location(MARS_LOCATION);
-				location.setLatitude(MARS_LATITUDE);
-				location.setLongitude(MARS_LONGITUDE);
-				setLocation(location);
+				// final Location location = new Location(MARS_LOCATION);
+				// location.setLatitude(MARS_LATITUDE);
+				// location.setLongitude(MARS_LONGITUDE);
+				// setLocation(location);
+				setErrorUI("Unable to get location");
 			}
 		}
 	};
@@ -81,8 +86,6 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 		mHaveWakeLock = true;
 	}
 
-	private WakeLock mWakeLock;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		mHandler = new Handler();
@@ -92,6 +95,8 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 		mProgressTextView = (TextView) findViewById(R.id.activity_glass_progress_text);
 		mProgressContainer = findViewById(R.id.activity_glass_progress_container);
 		mResultsContainer = findViewById(R.id.activity_glass_results_container);
+		mErrorContainer = findViewById(R.id.activity_glass_error_container);
+		mErrorMessage = (TextView) findViewById(R.id.activity_glass_error_message);
 
 		mCardScrollView = (CardScrollView) findViewById(R.id.activity_glass_results);
 		mCardScrollView.setOnItemClickListener(this);
@@ -100,22 +105,34 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 
 		final PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "GoogleGlassParking");
-		acquireLock();
+
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
+		start();
+	}
+
+	private void start() {
+		mIsError = false;
+		acquireLock();
 		mLocationHelper.startLocationSearch();
 		updateUI(null);
 		mHandler.postDelayed(mTimeout, GPS_TIMEOUT);
 	}
 
+	private void stop() {
+		releaseLock();
+		mLocationHelper.stopLocationSearch();
+		updateUI(null);
+		mHandler.removeCallbacks(mTimeout);
+	}
+
 	@Override
 	protected void onStop() {
 		super.onStop();
-		mLocationHelper.stopLocationSearch();
-		releaseLock();
+		stop();
 	}
 
 	@Override
@@ -123,13 +140,21 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 		super.onDestroy();
 		mIsDestroyed = true;
 	}
-	
-	public void setErrorUI(){
+
+	public void setErrorUI(final String error) {
+		mErrorMessage.setText(error);
 		mIsError = true;
-		
+		stop();
 	}
 
 	public void updateUI(final ArrayList<Parking> parkingList) {
+		if (mIsError) {
+			mErrorContainer.setVisibility(View.VISIBLE);
+			mProgressContainer.setVisibility(View.GONE);
+			mResultsContainer.setVisibility(View.GONE);
+			return;
+		}
+		mErrorContainer.setVisibility(View.GONE);
 		if (mParkingList == null) {
 			mParkingList = parkingList;
 		}
@@ -142,8 +167,10 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 			parkingAdapter.setParkingList(parkingList);
 			mCardScrollView.setAdapter(parkingAdapter);
 			mCardScrollView.activate();
-			final AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-			audio.playSoundEffect(Sounds.SUCCESS);
+			if (parkingList != null) {
+				final AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+				audio.playSoundEffect(Sounds.SUCCESS);
+			}
 			return;
 		}
 
@@ -158,6 +185,7 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 	}
 
 	public void setLocation(final Location location) {
+		mLocationHelper.stopLocationSearch();
 		mLocation = location;
 		findParking();
 	}
@@ -189,6 +217,27 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 			navigateTo(lawnParking.getLocation(), lawnParking.mAddress);
 			finish();
 		}
+	}
+
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent keyEvent) {
+		final boolean consumed = super.onKeyUp(keyCode, keyEvent);
+		if (!consumed && keyCode == KeyEvent.KEYCODE_DPAD_CENTER && mIsError) {
+			final AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+			audio.playSoundEffect(Sounds.TAP);
+			retry();
+			return true;
+		}
+		return consumed;
+	}
+
+	private synchronized void retry() {
+		mIsError = false;
+		mParkingList = null;
+		mLocation = null;
+		mLocationHelper.startLocationSearch();
+		start();
+
 	}
 
 	public void navigateTo(final Location location, final String address) {
