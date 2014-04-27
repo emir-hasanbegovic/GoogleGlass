@@ -19,8 +19,12 @@ public class GlassService extends Service {
 	private static final String GREEN_PARKING = "greenParking";
 	private static final String LAWN_PARKING = "lawnParking";
 	private static final String LIVE_CARD_ID = "parking";
+	private static final String MENU_LONG = "menuLong";
+	private static final String MENU_LAT = "menuLat";
 	private LiveCard mLiveCard;
-
+	private float	mLongitude;
+	private float	mLatitude;
+	
 	@Override
 	public void onCreate() {
 		Debug.setIsDebug(true);
@@ -77,6 +81,10 @@ public class GlassService extends Service {
 		final String priceString = String.format(Parking.PRICE, greenParking.mRateHalfHour);
 		remoteViews.setTextViewText(R.id.list_item_green_parking_distance, distanceString);
 		remoteViews.setTextViewText(R.id.list_item_green_parking_price, priceString);
+		
+		mLongitude = Float.parseFloat(greenParking.mLong);
+		mLatitude = Float.parseFloat(greenParking.mLat);
+		
 		publishCard(context, remoteViews);
 	}
 
@@ -85,6 +93,10 @@ public class GlassService extends Service {
 		remoteViews.setTextViewText(R.id.list_item_lawn_parking_address, lawnParking.mAddress);
 		final String distanceString = String.format(Parking.DISTANCE, lawnParking.mDistance);
 		remoteViews.setTextViewText(R.id.list_item_green_parking_distance, distanceString);
+		
+		mLongitude = lawnParking.mLongitude;
+		mLatitude = lawnParking.mLatitude;
+		
 		publishCard(context, remoteViews);
 	}
 
@@ -92,7 +104,7 @@ public class GlassService extends Service {
 		if (mLiveCard == null) {
 			mLiveCard = new LiveCard(this, LIVE_CARD_ID);
 			mLiveCard.setViews(remoteViews);
-			final Intent intent = new Intent(context, GlassMenuActivity.class);
+			Intent intent = GlassMenuActivity.SetUpMenu(this, mLongitude, mLatitude);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			mLiveCard.setAction(PendingIntent.getActivity(context, 0, intent, 0));
 			mLiveCard.publish(LiveCard.PublishMode.SILENT);
@@ -111,7 +123,7 @@ public class GlassService extends Service {
 		intent.putExtra(GreenParking.Keys.LNG, greenParking.mLong);
 		intent.putExtra(GreenParking.Keys.RATE_HALF_HOUR, greenParking.mRateHalfHour);
 		intent.putExtra(GreenParking.Keys.DISTANCE, greenParking.mDistance);
-
+		
 		activity.startService(intent);
 	}
 
@@ -123,5 +135,19 @@ public class GlassService extends Service {
 		intent.putExtra(LawnParking.Keys.LONGITUDE, lawnParking.mLongitude);
 		intent.putExtra(LawnParking.Keys.DISTANCE, lawnParking.mDistance);
 		activity.startService(intent);
+	}
+	
+	@Override
+	public void onDestroy(){
+		unpublishCard(this);
+	
+	    super.onDestroy();
+	}
+	
+	private void unpublishCard(Context context){
+	    if (mLiveCard != null) {
+	    	mLiveCard.unpublish();
+	    	mLiveCard = null;
+	    }
 	}
 }
