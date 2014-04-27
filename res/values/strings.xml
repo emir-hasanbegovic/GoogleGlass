@@ -10,5 +10,7 @@
     <string name="stop">Stop</string>
     <string name="go">Go</string>
     <string name="activity_glass_results_action_label">Tap for directions</string>
+    <string name="activity_glass_error_message">Unable to find parking</string>
+    <string name="activity_glass_error_label">Tap to retry</string>
 
 </resources>

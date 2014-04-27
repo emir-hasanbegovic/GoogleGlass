@@ -39,6 +39,7 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 
 	private ArrayList<Parking> mParkingList;
 	private boolean mHaveWakeLock;
+	private boolean mIsError;
 	private Location mLocation;
 	private Handler mHandler;
 	private TextView mProgressTextView;
@@ -121,6 +122,11 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 	protected void onDestroy() {
 		super.onDestroy();
 		mIsDestroyed = true;
+	}
+	
+	public void setErrorUI(){
+		mIsError = true;
+		
 	}
 
 	public void updateUI(final ArrayList<Parking> parkingList) {
