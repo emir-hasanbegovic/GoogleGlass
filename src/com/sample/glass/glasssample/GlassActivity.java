@@ -39,7 +39,6 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 
 	private ArrayList<Parking> mParkingList;
 	private boolean mHaveWakeLock;
-	private boolean mIsError;
 	private Location mLocation;
 	private Handler mHandler;
 	private TextView mProgressTextView;
@@ -123,11 +122,6 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 		super.onDestroy();
 		mIsDestroyed = true;
 	}
-	
-	public void setErrorUI(){
-		mIsError = true;
-		
-	}
 
 	public void updateUI(final ArrayList<Parking> parkingList) {
 		if (mParkingList == null) {
@@ -196,7 +190,9 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 			return;
 		}
 		final Intent intent = new Intent(Intent.ACTION_VIEW);
-		final String uri = "google.navigation:q=" + address.replaceAll("\\s", "+") + "&mode=d";
+		final double latitude = location.getLatitude();
+		final double longitude = location.getLongitude();
+		final String uri = "google.navigation:q=" + latitude + "," + longitude +"(" + address.replaceAll("\\s", "+") + ")" + "&mode=d&title=" + address.replaceAll("\\s", "+");
 		Debug.log("uri: " + uri);
 		intent.setData(Uri.parse(uri));
 		startActivity(intent);
