@@ -1,8 +1,6 @@
 package com.sample.glass.glasssample;
-
-import com.sample.glass.glasssample.utilities.Debug;
-
 import android.app.Activity;
+import android.app.Service;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,10 +9,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 public class GlassMenuActivity extends Activity {
+	private static final String MENU_LONG = "menuLong";
+	private static final String MENU_LAT = "menuLat";
+	private float lon;
+	private float lat;
+	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Debug.log("GlassMenuActivity");
+        Intent intent = getIntent();
+        if(intent != null){
+        	lon = intent.getFloatExtra(MENU_LONG, 0);
+        	lat = intent.getFloatExtra(MENU_LAT, 0);
+        }
     }
 
 	@Override
@@ -43,14 +50,21 @@ public class GlassMenuActivity extends Activity {
                 return true;
             case R.id.go:
             	Intent intent = new Intent(Intent.ACTION_VIEW);
-        		intent.setData(Uri.parse("google.navigation:q=43.6581800,-79.3815200&mode=w"));
+        		intent.setData(Uri.parse("google.navigation:q="+ lat +"," +lon +"&mode=w"));
         		startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
+    
+    public static Intent SetUpMenu(final Service service, final float lon, final float lat) {
+		final Intent intent = new Intent(service, GlassMenuActivity.class);
+		intent.putExtra(MENU_LONG , lon);
+		intent.putExtra(MENU_LAT , lat);
+		return intent;
+	}
+    
     @Override
     public void onOptionsMenuClosed(Menu menu) {
         // Nothing else to do, closing the Activity.
