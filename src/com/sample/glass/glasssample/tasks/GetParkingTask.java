@@ -34,8 +34,11 @@ public class GetParkingTask extends AsyncTask<Void, Void, Void> {
 			final CarParks carParks = ParkingApplication.GSON.fromJson(inputStreamReader, CarParks.class);
 			if (carParks != null) {
 				final ArrayList<GreenParking> greenParkingList = carParks.mCarPark;
+				
 				if (greenParkingList != null) {
 					ParkingApplication.GREEN_PARKING_LIST = greenParkingList;
+				} else {
+					Debug.log("greenParkingList: " + null);
 				}
 			}
 		} catch (final UnsupportedEncodingException unsupportedEncodingException) {
@@ -60,6 +63,10 @@ public class GetParkingTask extends AsyncTask<Void, Void, Void> {
 			inputStream = mActivity.getResources().openRawResource(R.raw.lawn_parking);
 			inputStreamReader = new InputStreamReader(inputStream, UTF8);
 			ParkingApplication.LAWN_PARKING_LIST = ParkingApplication.GSON.fromJson(inputStreamReader, LawnParkingResults.class);
+			if (ParkingApplication.LAWN_PARKING_LIST == null){
+				Debug.log("lawnParkingList: " + null);	
+			}
+			
 		} catch (final UnsupportedEncodingException unsupportedEncodingException) {
 			Debug.log(unsupportedEncodingException.getMessage());
 		} finally {

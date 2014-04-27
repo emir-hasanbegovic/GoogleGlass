@@ -20,6 +20,8 @@ import com.sample.glass.glasssample.model.Parking;
  * Created by Emir Hasanbegovic on 2014-03-21.
  */
 public class ParkingAdapter extends CardScrollAdapter {
+	private static final String PRICE = "$ %s / 30 mins";
+	private static final String DISTANCE = "%.1f km";
 
 	private enum Types {
 		greenParking, lawnParking
@@ -31,8 +33,8 @@ public class ParkingAdapter extends CardScrollAdapter {
 		super();
 		mContext = context;
 	}
-	
-	public void setParkingList(final ArrayList<Parking> parkingList){
+
+	public void setParkingList(final ArrayList<Parking> parkingList) {
 		mParkingList = parkingList;
 	}
 
@@ -107,15 +109,18 @@ public class ParkingAdapter extends CardScrollAdapter {
 		switch (type) {
 		case greenParking: {
 			final GreenParking greenParking = (GreenParking) parking;
-			
+
 			final TextView addressTextView = (TextView) view.findViewById(R.id.list_item_green_parking_address);
 			addressTextView.setText(greenParking.mAddress);
-			
+
 			final TextView distanceTextView = (TextView) view.findViewById(R.id.list_item_green_parking_distance);
-			distanceTextView.setText(Float.toString(greenParking.mDistance) + " meters ");
-			
+			final float distanceInKm = getDistanceInKm(greenParking.mDistance);
+			final String distance = String.format(DISTANCE, distanceInKm);
+			distanceTextView.setText(distance);
+
 			final TextView priceTextView = (TextView) view.findViewById(R.id.list_item_green_parking_price);
-			priceTextView.setText("$" + greenParking.mRateHalfHour + " / 30 mins.");
+			final String price = String.format(PRICE, greenParking.mRateHalfHour);
+			priceTextView.setText(price);
 			break;
 		}
 		case lawnParking:
@@ -123,9 +128,18 @@ public class ParkingAdapter extends CardScrollAdapter {
 			final LawnParking lawnParking = (LawnParking) parking;
 			final TextView addressTextView = (TextView) view.findViewById(R.id.list_item_lawn_parking_address);
 			addressTextView.setText(lawnParking.mAddress);
+
+			final TextView distanceTextView = (TextView) view.findViewById(R.id.list_item_lawn_parking_distance);
+			final float distanceInKm = getDistanceInKm(lawnParking.mDistance);
+			final String distance = String.format(DISTANCE, distanceInKm);
+			distanceTextView.setText(distance);
 		}
 		return view;
 
+	}
+	
+	private float getDistanceInKm(final float distanceInM){
+		return distanceInM / 1000f;
 	}
 
 	@Override

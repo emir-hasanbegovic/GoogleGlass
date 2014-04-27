@@ -7,6 +7,7 @@
     tools:ignore="MergeRootFrame" >
 
     <FrameLayout
+        android:background="@drawable/activity_glass_progress_container_background"
         android:id="@+id/activity_glass_progress_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >

@@ -15,7 +15,7 @@ public class GreenParking extends Parking {
 
 	@SerializedName(Keys.ID)
 	public String mId;
-	
+
 	@SerializedName(Keys.ADDRESS)
 	public String mAddress;
 
@@ -33,6 +33,7 @@ public class GreenParking extends Parking {
 		mId = greenParking.mId;
 		mLat = greenParking.mLat;
 		mLong = greenParking.mLong;
+		mAddress = greenParking.mAddress;
 		mRateHalfHour = greenParking.mRateHalfHour;
 	}
 
