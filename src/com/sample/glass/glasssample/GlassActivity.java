@@ -10,8 +10,9 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
@@ -36,8 +37,9 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 
 	public boolean mIsDestroyed;
 	public boolean mFindingParking;
-	private ArrayList<Parking> mParkingList;
 
+	private ArrayList<Parking> mParkingList;
+	private boolean mHaveWakeLock;
 	private Location mLocation;
 	private Handler mHandler;
 	private TextView mProgressTextView;
@@ -52,6 +54,7 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 			if (mIsDestroyed) {
 				return;
 			}
+			releaseLock();
 			mLocationHelper.stopLocationSearch();
 			if (mLocation == null) {
 				final Location location = new Location(MARS_LOCATION);
@@ -62,10 +65,27 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 		}
 	};
 
+	private synchronized void releaseLock() {
+		if (!mHaveWakeLock) {
+			return;
+		}
+		mHaveWakeLock = false;
+		mWakeLock.release();
+	}
+
+	private synchronized void acquireLock() {
+		if (mHaveWakeLock) {
+			return;
+		}
+		mWakeLock.acquire();
+		mHaveWakeLock = true;
+	}
+
+	private WakeLock mWakeLock;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		mHandler = new Handler();
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_glass);
@@ -77,6 +97,10 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 		mCardScrollView.setOnItemClickListener(this);
 
 		mLocationHelper = new LocationHelper(this);
+
+		final PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "GoogleGlassParking");
+		acquireLock();
 	}
 
 	@Override
@@ -92,6 +116,7 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 	protected void onStop() {
 		super.onStop();
 		mLocationHelper.stopLocationSearch();
+		releaseLock();
 	}
 
 	@Override

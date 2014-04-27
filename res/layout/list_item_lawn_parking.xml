@@ -5,8 +5,8 @@
     android:layout_margin="@dimen/glass_card_margin" >
 
     <ImageView
-        android:id="@+id/list_item_lawn_parking_icon"
-        android:layout_width="200px"
+        android:id="@+id/list_item_lawn_parking_image"
+        android:layout_width="@dimen/glass_card_left_column_width"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/glass_card_two_column_margin"
-        android:layout_toRightOf="@id/list_item_lawn_parking_icon"
+        android:layout_toRightOf="@id/list_item_lawn_parking_image"
         android:gravity="left|center_vertical"
         android:orientation="vertical" >
 

@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +15,7 @@ import com.sample.glass.glasssample.R;
 import com.sample.glass.glasssample.model.GreenParking;
 import com.sample.glass.glasssample.model.LawnParking;
 import com.sample.glass.glasssample.model.Parking;
-import com.sample.glass.glasssample.utilities.Debug;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-import com.squareup.picasso.Picasso.LoadedFrom;
 
 /**
  * Created by Emir Hasanbegovic on 2014-03-21.
@@ -32,7 +26,7 @@ public class ParkingAdapter extends CardScrollAdapter {
 		greenParking, lawnParking
 	}
 
-	private static final String URL = "http://maps.googleapis.com/maps/api/streetview?size=240x360&location=%s&sensor=false";
+	private static final String URL = "http://maps.googleapis.com/maps/api/streetview?size=240x360&location=%s,Toronto,ON&sensor=false";
 	private Context mContext;
 
 	public ParkingAdapter(final Context context) {
@@ -86,21 +80,31 @@ public class ParkingAdapter extends CardScrollAdapter {
 	private View getView(final Context context, final Types type, final View convertView, final ViewGroup viewGroup) {
 		if (convertView == null) {
 			final LayoutInflater layoutInflater = LayoutInflater.from(context);
-			final int resourceId = getResourceId(type);
-			final View view = layoutInflater.inflate(resourceId, viewGroup, false);
-			return view;
+			switch (type) {
+			case greenParking: {
+				final View view = layoutInflater.inflate(R.layout.list_item_green_parking, viewGroup, false);
+				setTag(view, R.id.list_item_green_parking_address);
+				setTag(view, R.id.list_item_green_parking_distance);
+				setTag(view, R.id.list_item_green_parking_price);
+				setTag(view, R.id.list_item_green_parking_background);
+				return view;
+			}
+			case lawnParking:
+			default: {
+				final View view = layoutInflater.inflate(R.layout.list_item_lawn_parking, viewGroup, false);
+				setTag(view, R.id.list_item_lawn_parking_address);
+				setTag(view, R.id.list_item_lawn_parking_distance);
+				setTag(view, R.id.list_item_lawn_parking_image);
+				return view;
+			}
+			}
+
 		}
 		return convertView;
 	}
 
-	private int getResourceId(final Types type) {
-		switch (type) {
-		case greenParking:
-			return R.layout.list_item_green_parking;
-		case lawnParking:
-		default:
-			return R.layout.list_item_lawn_parking;
-		}
+	private void setTag(final View view, final int resourceId) {
+		view.setTag(resourceId, view.findViewById(resourceId));
 	}
 
 	@Override
@@ -119,45 +123,43 @@ public class ParkingAdapter extends CardScrollAdapter {
 		case greenParking: {
 			final GreenParking greenParking = (GreenParking) parking;
 
-			final TextView addressTextView = (TextView) view.findViewById(R.id.list_item_green_parking_address);
+			final TextView addressTextView = (TextView) view.getTag(R.id.list_item_green_parking_address);
 			addressTextView.setText(greenParking.mAddress);
 
-			final TextView distanceTextView = (TextView) view.findViewById(R.id.list_item_green_parking_distance);
+			final TextView distanceTextView = (TextView) view.getTag(R.id.list_item_green_parking_distance);
 			final float distanceInKm = getDistanceInKm(greenParking.mDistance);
 			final String distance = String.format(Parking.DISTANCE, distanceInKm);
 			distanceTextView.setText(distance);
 
-			final TextView priceTextView = (TextView) view.findViewById(R.id.list_item_green_parking_price);
+			final TextView priceTextView = (TextView) view.getTag(R.id.list_item_green_parking_price);
 			final String price = String.format(Parking.PRICE, greenParking.mRateHalfHour);
 			priceTextView.setText(price);
-			
-			final ImageView imageView = (ImageView) view.findViewById(R.id.list_item_green_parking_background);
-			final String address = greenParking.mAddress.replaceAll("\\s", "+") + ",Toronto,ON";
+
+			final ImageView imageView = (ImageView) view.getTag(R.id.list_item_green_parking_background);
+			final String address = greenParking.mAddress.replaceAll("\\s", "+");
 			final String url = String.format(URL, address);
-			Debug.log("url: "+ url);
 			imageView.setImageBitmap(null);
 			Picasso.with(mContext).load(url).into(imageView);
-			
+
 			break;
 		}
 		case lawnParking:
 		default:
 			final LawnParking lawnParking = (LawnParking) parking;
-			final TextView addressTextView = (TextView) view.findViewById(R.id.list_item_lawn_parking_address);
+			final TextView addressTextView = (TextView) view.getTag(R.id.list_item_lawn_parking_address);
 			addressTextView.setText(lawnParking.mAddress);
 
-			final TextView distanceTextView = (TextView) view.findViewById(R.id.list_item_lawn_parking_distance);
+			final TextView distanceTextView = (TextView) view.getTag(R.id.list_item_lawn_parking_distance);
 			final float distanceInKm = getDistanceInKm(lawnParking.mDistance);
 			final String distance = String.format(Parking.DISTANCE, distanceInKm);
 			distanceTextView.setText(distance);
-			
-			final ImageView imageView = (ImageView) view.findViewById(R.id.list_item_lawn_parking_icon);
-			final String address = lawnParking.mAddress.replaceAll("\\s", "+") + ",Toronto,ON";
+
+			final ImageView imageView = (ImageView) view.getTag(R.id.list_item_lawn_parking_image);
+			final String address = lawnParking.mAddress.replaceAll("\\s", "+");
 			final String url = String.format(URL, address);
-			Debug.log("url: "+ url);
 			imageView.setImageBitmap(null);
 			Picasso.with(mContext).load(url).into(imageView);
-			
+
 		}
 		return view;
 

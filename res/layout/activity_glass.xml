@@ -31,8 +31,7 @@
         android:id="@+id/activity_glass_results_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:background="@drawable/activity_glass_background" >
+        android:visibility="gone" >
 
         <com.google.android.glass.widget.CardScrollView
             android:id="@+id/activity_glass_results"
