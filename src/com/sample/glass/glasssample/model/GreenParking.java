@@ -24,18 +24,6 @@ public class GreenParking extends Parking {
 	@SerializedName(Keys.RATE_HALF_HOUR)
 	public String mRateHalfHour;
 
-	public GreenParking(final float distance) {
-		super(distance);
-	}
-
-	public GreenParking(GreenParking greenParking, float distance) {
-		super(distance);
-		mLat = greenParking.mLat;
-		mLong = greenParking.mLong;
-		mAddress = greenParking.mAddress;
-		mRateHalfHour = greenParking.mRateHalfHour;
-	}
-
 	@Override
 	public Location getLocation() {
 		if (mLat != null && mLong != null) {

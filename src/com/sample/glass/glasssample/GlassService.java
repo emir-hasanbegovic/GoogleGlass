@@ -48,7 +48,8 @@ public class GlassService extends Service {
 			final String address = intent.getStringExtra(LawnParking.Keys.ADDRESS);
 			final float latitude = intent.getFloatExtra(LawnParking.Keys.LATITUDE, 0);
 			final float longitude = intent.getFloatExtra(LawnParking.Keys.LONGITUDE, 0);
-			final LawnParking lawnParking = new LawnParking(distance);
+			final LawnParking lawnParking = new LawnParking();
+			lawnParking.mDistance = distance;
 			lawnParking.mAddress = address;
 			lawnParking.mLatitude = latitude;
 			lawnParking.mLongitude = longitude;
@@ -58,7 +59,8 @@ public class GlassService extends Service {
 			final String address = intent.getStringExtra(GreenParking.Keys.ADDRESS);
 			final String latitude = intent.getStringExtra(GreenParking.Keys.LAT);
 			final String longitude = intent.getStringExtra(GreenParking.Keys.LNG);
-			final GreenParking greenParking = new GreenParking(distance);
+			final GreenParking greenParking = new GreenParking();
+			greenParking.mDistance = distance;
 			greenParking.mAddress = address;
 			greenParking.mLat = latitude;
 			greenParking.mLong = longitude;
@@ -69,7 +71,7 @@ public class GlassService extends Service {
 	private void publishCard(final Context context, final GreenParking greenParking) {
 		final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.list_item_green_parking);
 		remoteViews.setTextViewText(R.id.list_item_green_parking_address, greenParking.mAddress);
-		final String distanceString = String.format(Parking.DISTANCE, greenParking.mDistance / 1000f);
+		final String distanceString = String.format(Parking.DISTANCE, greenParking.mDistance);
 		final String priceString = String.format(Parking.PRICE, greenParking.mRateHalfHour);
 		remoteViews.setTextViewText(R.id.list_item_green_parking_distance, distanceString);
 		remoteViews.setTextViewText(R.id.list_item_green_parking_price, priceString);
@@ -79,7 +81,7 @@ public class GlassService extends Service {
 	private void publishCard(final Context context, final LawnParking lawnParking) {
 		final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.list_item_lawn_parking);
 		remoteViews.setTextViewText(R.id.list_item_lawn_parking_address, lawnParking.mAddress);
-		final String distanceString = String.format(Parking.DISTANCE, lawnParking.mDistance / 1000f);
+		final String distanceString = String.format(Parking.DISTANCE, lawnParking.mDistance);
 		remoteViews.setTextViewText(R.id.list_item_green_parking_distance, distanceString);
 		publishCard(context, remoteViews);
 	}

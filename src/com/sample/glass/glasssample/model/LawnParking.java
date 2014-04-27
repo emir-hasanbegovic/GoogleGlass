@@ -6,17 +6,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class LawnParking extends Parking {
 
-	public LawnParking(final float distance) {
-		super(distance);
-	}
-	
-	public LawnParking(final LawnParking lawnParking, final float distance) {
-		super(distance);
-		mAddress = lawnParking.mAddress;
-		mLatitude = lawnParking.mLatitude;
-		mLongitude = lawnParking.mLongitude;
-	}
-
 	public static class Keys extends Parking.Keys {
 		public static final String ADDRESS = "address";
 		public static final String LATITUDE = "latitude";

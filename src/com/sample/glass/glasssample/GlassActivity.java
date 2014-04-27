@@ -24,8 +24,6 @@ import com.sample.glass.glasssample.model.GreenParking;
 import com.sample.glass.glasssample.model.LawnParking;
 import com.sample.glass.glasssample.model.Parking;
 import com.sample.glass.glasssample.tasks.FindParkingTask;
-import com.sample.glass.glasssample.tasks.GetParkingTask;
-import com.sample.glass.glasssample.utilities.Debug;
 import com.sample.glass.glasssample.utilities.LocationHelper;
 
 public class GlassActivity extends Activity implements OnItemClickListener {
@@ -106,7 +104,6 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		getParking();
 		mLocationHelper.startLocationSearch();
 		updateUI(null);
 		mHandler.postDelayed(mTimeout, GPS_TIMEOUT);
@@ -123,17 +120,6 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 	protected void onDestroy() {
 		super.onDestroy();
 		mIsDestroyed = true;
-	}
-
-	private void getParking() {
-		if (ParkingApplication.GREEN_PARKING_LIST == null || ParkingApplication.LAWN_PARKING_LIST == null) {
-			Debug.log("Getting lists");
-			final GetParkingTask parkingTask = new GetParkingTask(this);
-			parkingTask.execute((Void) null);
-		} else {
-			Debug.log("LAWN_PARKING_LIST: " + ParkingApplication.LAWN_PARKING_LIST.size());
-			Debug.log("GREEN_PARKING_LIST: " + ParkingApplication.GREEN_PARKING_LIST.size());
-		}
 	}
 
 	public void updateUI(final ArrayList<Parking> parkingList) {
@@ -157,10 +143,7 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 		mProgressContainer.setVisibility(View.VISIBLE);
 		mResultsContainer.setVisibility(View.GONE);
 		final boolean hasLocation = mLocation != null;
-		final boolean hasParkingLists = ParkingApplication.LAWN_PARKING_LIST != null && ParkingApplication.GREEN_PARKING_LIST != null;
-		if (!hasParkingLists) {
-			mProgressTextView.setText(R.string.activity_glass_progress_getting_parking);
-		} else if (!hasLocation) {
+		if (!hasLocation) {
 			mProgressTextView.setText(R.string.activity_glass_progress_finding_location);
 		} else {
 			mProgressTextView.setText(R.string.activity_glass_progress_finding_parking);
@@ -175,7 +158,7 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 	public void findParking() {
 		updateUI(null);
 		final boolean foundParking = mParkingList != null;
-		if (foundParking || mFindingParking || mLocation == null || ParkingApplication.GREEN_PARKING_LIST == null || ParkingApplication.LAWN_PARKING_LIST == null) {
+		if (foundParking || mFindingParking || mLocation == null) {
 			return;
 		}
 		mFindingParking = true;

@@ -1,7 +1,16 @@
 package com.sample.glass.glasssample.tasks;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Collections;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.location.Location;
 import android.os.AsyncTask;
@@ -9,13 +18,21 @@ import android.os.AsyncTask;
 import com.sample.glass.glasssample.GlassActivity;
 import com.sample.glass.glasssample.ParkingApplication;
 import com.sample.glass.glasssample.model.GreenParking;
-import com.sample.glass.glasssample.model.LawnParking;
 import com.sample.glass.glasssample.model.Parking;
+import com.sample.glass.glasssample.model.ParkingResponse;
+import com.sample.glass.glasssample.utilities.Debug;
 
 public class FindParkingTask extends AsyncTask<Void, Void, ArrayList<Parking>> {
 	private final GlassActivity mActivity;
 	private final Location mLocation;
 	private final int mRadius;
+
+	public static final String UTF8 = "UTF8";
+	public static final String BASE_URL = "http://cityspot.org/makedata.php";
+	public static final String LATITUDE = "latitude";
+	public static final String LONGITUDE = "longitude";
+	public static final String RADIUS = "radius";
+	public static final String PARKING_URL = BASE_URL + "?" + LATITUDE + "=%f&" + LONGITUDE + "=%f&" + RADIUS + "=%d";
 
 	public FindParkingTask(final GlassActivity activity, final int radius, final Location location) {
 		mActivity = activity;
@@ -23,32 +40,65 @@ public class FindParkingTask extends AsyncTask<Void, Void, ArrayList<Parking>> {
 		mRadius = radius;
 	}
 
+	private String getUrl() {
+		if (mLocation == null) {
+			return null;
+		}
+		final double longitude = mLocation.getLongitude();
+		final double latitude = mLocation.getLatitude();
+		return String.format(PARKING_URL, latitude, longitude, mRadius);
+
+	}
+
+	private ArrayList<Parking> convert(final ParkingResponse parkingResponse) {
+		if (parkingResponse == null) {
+			return null;
+		}
+
+		final ArrayList<Parking> parkingList = new ArrayList<Parking>(parkingResponse.size());
+		for (final GreenParking greenParking : parkingResponse) {
+			parkingList.add(greenParking);
+		}
+		return parkingList;
+
+	}
+
 	@Override
 	protected ArrayList<Parking> doInBackground(final Void... params) {
-		final ArrayList<Parking> parkingList = new ArrayList<Parking>();
-		for (final GreenParking greenParking : ParkingApplication.GREEN_PARKING_LIST) {
-			final Location greenParkingLocation = greenParking.getLocation();
-			if (greenParkingLocation != null) {
-				final float distance = mLocation.distanceTo(greenParkingLocation);
-				if (distance < mRadius) {
-					parkingList.add(new GreenParking(greenParking, distance));
+		InputStream inputStream = null;
+		InputStreamReader inputStreamReader = null;
+		try {
+
+			final HttpClient httpClient = new DefaultHttpClient();
+			final String url = getUrl();
+			final HttpGet httpGet = new HttpGet(url);
+			final HttpResponse httpResponse = httpClient.execute(httpGet);
+
+			inputStream = httpResponse.getEntity().getContent();
+			inputStreamReader = new InputStreamReader(inputStream, UTF8);
+			final ParkingResponse parkingResponse = ParkingApplication.GSON.fromJson(inputStreamReader, ParkingResponse.class);
+			return convert(parkingResponse);
+		} catch (final UnsupportedEncodingException unsupportedEncodingException) {
+			Debug.log(unsupportedEncodingException.getMessage());
+		} catch (final ClientProtocolException clientProtocolException) {
+			Debug.log(clientProtocolException.getMessage());
+		} catch (final IOException ioException) {
+			Debug.log(ioException.getMessage());
+		} finally {
+			if (inputStreamReader != null) {
+				try {
+					inputStreamReader.close();
+				} catch (final IOException ioException) {
+				}
+			}
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (final IOException ioException) {
 				}
 			}
 		}
-
-		for (final LawnParking lawnParking : ParkingApplication.LAWN_PARKING_LIST) {
-			final Location lawnParkingLocation = new Location("Lawn Parking");
-			lawnParkingLocation.setLatitude(lawnParking.mLatitude);
-			lawnParkingLocation.setLongitude(lawnParking.mLongitude);
-			final float distance = mLocation.distanceTo(lawnParkingLocation);
-			if (distance < mRadius) {
-				parkingList.add(new LawnParking(lawnParking, distance));
-			}
-		}
-		
-		Collections.sort(parkingList);
-		
-		return parkingList;
+		return null;
 	}
 
 	@Override

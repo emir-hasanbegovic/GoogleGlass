@@ -127,8 +127,7 @@ public class ParkingAdapter extends CardScrollAdapter {
 			addressTextView.setText(greenParking.mAddress);
 
 			final TextView distanceTextView = (TextView) view.getTag(R.id.list_item_green_parking_distance);
-			final float distanceInKm = getDistanceInKm(greenParking.mDistance);
-			final String distance = String.format(Parking.DISTANCE, distanceInKm);
+			final String distance = String.format(Parking.DISTANCE, greenParking.mDistance);
 			distanceTextView.setText(distance);
 
 			final TextView priceTextView = (TextView) view.getTag(R.id.list_item_green_parking_price);
@@ -150,8 +149,7 @@ public class ParkingAdapter extends CardScrollAdapter {
 			addressTextView.setText(lawnParking.mAddress);
 
 			final TextView distanceTextView = (TextView) view.getTag(R.id.list_item_lawn_parking_distance);
-			final float distanceInKm = getDistanceInKm(lawnParking.mDistance);
-			final String distance = String.format(Parking.DISTANCE, distanceInKm);
+			final String distance = String.format(Parking.DISTANCE, lawnParking.mDistance);
 			distanceTextView.setText(distance);
 
 			final ImageView imageView = (ImageView) view.getTag(R.id.list_item_lawn_parking_image);
@@ -163,10 +161,6 @@ public class ParkingAdapter extends CardScrollAdapter {
 		}
 		return view;
 
-	}
-
-	private float getDistanceInKm(final float distanceInM) {
-		return distanceInM / 1000f;
 	}
 
 	@Override
