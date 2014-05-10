@@ -3,14 +3,14 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/activity_glass_background"
     tools:context="com.sample.glass.GlassActivity"
     tools:ignore="MergeRootFrame" >
 
     <FrameLayout
         android:id="@+id/activity_glass_progress_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:background="@drawable/splash_bg" >
 
         <ImageView
             android:layout_width="wrap_content"
@@ -39,6 +39,7 @@
         android:id="@+id/activity_glass_results_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/activity_glass_background"
         android:visibility="gone" >
 
         <com.google.android.glass.widget.CardScrollView
@@ -49,8 +50,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="5px"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="@dimen/activity_glass_results_action_label_margin_bottom"
+            android:layout_marginRight="@dimen/glass_card_margin"
             android:text="@string/activity_glass_results_action_label"
             android:textSize="@dimen/font_20px" />
     </FrameLayout>
@@ -59,6 +61,7 @@
         android:id="@+id/activity_glass_error_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/activity_glass_background"
         android:visibility="gone" >
 
         <TextView
