@@ -61,11 +61,11 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 			releaseLock();
 			mLocationHelper.stopLocationSearch();
 			if (mLocation == null) {
-				final Location location = new Location(MARS_LOCATION);
-				location.setLatitude(MARS_LATITUDE);
-				location.setLongitude(MARS_LONGITUDE);
-				setLocation(location);
-				// setErrorUI("Unable to get location");
+				//final Location location = new Location(MARS_LOCATION);
+				//location.setLatitude(MARS_LATITUDE);
+				//location.setLongitude(MARS_LONGITUDE);
+				//setLocation(location);
+				setErrorUI(getResources().getString(R.string.activity_glass_error_nolocation));
 			}
 		}
 	};
@@ -174,6 +174,10 @@ public class GlassActivity extends Activity implements OnItemClickListener {
 			if (parkingList != null) {
 				final AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 				audio.playSoundEffect(Sounds.SUCCESS);
+			}
+			else{
+				Debug.log("No Result");
+				setErrorUI(getResources().getString(R.string.activity_glass_error_message));
 			}
 			return;
 		}

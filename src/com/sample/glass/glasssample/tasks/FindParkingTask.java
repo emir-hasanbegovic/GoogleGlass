@@ -17,6 +17,7 @@ import android.os.AsyncTask;
 
 import com.sample.glass.glasssample.GlassActivity;
 import com.sample.glass.glasssample.ParkingApplication;
+import com.sample.glass.glasssample.R;
 import com.sample.glass.glasssample.model.GreenParking;
 import com.sample.glass.glasssample.model.Parking;
 import com.sample.glass.glasssample.model.ParkingResponse;
@@ -107,7 +108,7 @@ public class FindParkingTask extends AsyncTask<Void, Void, ArrayList<Parking>> {
 			return;
 		}
 		if (parkingList == null || parkingList.isEmpty()) {
-			mActivity.setErrorUI("Unable to retrieve Results");
+			mActivity.setErrorUI(mActivity.getResources().getString(R.string.activity_glass_error_message));
 		} else {
 			mActivity.updateUI(parkingList);
 		}
