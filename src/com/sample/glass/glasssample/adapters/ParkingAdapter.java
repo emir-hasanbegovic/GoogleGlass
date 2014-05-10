@@ -26,7 +26,7 @@ public class ParkingAdapter extends CardScrollAdapter {
 		greenParking, lawnParking
 	}
 
-	private static final String URL = "http://maps.googleapis.com/maps/api/streetview?size=200x280&location=%s&sensor=false";
+	private static final String URL = "http://maps.googleapis.com/maps/api/streetview?size=240x360&location=%s&sensor=false";
 	private Context mContext;
 
 	public ParkingAdapter(final Context context) {
