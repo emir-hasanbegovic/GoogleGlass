@@ -8,8 +8,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.sample.glass.glasssample.GlassActivity;
+import com.sample.glass.glasssample.R;
 
 public class LocationHelper implements LocationListener {
 	private final LocationManager mLocationManager;
@@ -22,10 +24,10 @@ public class LocationHelper implements LocationListener {
 
 	public void startLocationSearch() {
 		final Criteria criteria = new Criteria();
-		criteria.setAccuracy(Criteria.ACCURACY_FINE);
-		criteria.setAltitudeRequired(true);
+//		criteria.setAccuracy(Criteria.ACCURACY_FINE);
+//		criteria.setAltitudeRequired(true);
 		final List<String> providers = mLocationManager.getProviders(criteria, true);
-
+		
 		float smallestAccuracy = Float.MAX_VALUE;
 		Location smallestLocation = null;
 		for (String provider : providers) {
@@ -36,6 +38,10 @@ public class LocationHelper implements LocationListener {
 				if (smallestAccuracy < accuracy) {
 					smallestLocation = location;
 				}
+			}
+			else
+			{
+				mGlassActivity.setErrorUI(mGlassActivity.getResources().getString(R.string.activity_glass_error_nolocation));
 			}
 		}
 		if (smallestLocation != null) {
